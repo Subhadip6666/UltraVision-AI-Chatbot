@@ -243,3 +243,5 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
     </div>
   );
 }
+
+    
