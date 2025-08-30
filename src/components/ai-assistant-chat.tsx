@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -14,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import { Textarea } from "./ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-
+import type { Chat } from "@/app/page";
 
 const chatSchema = z.object({
   message: z.string().min(1, "Message cannot be empty."),
@@ -22,14 +23,14 @@ const chatSchema = z.object({
 
 type ChatFormValues = z.infer<typeof chatSchema>;
 
-interface Message {
+export interface Message {
   id: string;
   role: "user" | "assistant";
   content: React.ReactNode;
 }
 
-const ActionCard = ({ icon, title, example }: { icon: React.ReactNode, title: string, example: string }) => (
-    <Card className="cursor-pointer hover:bg-card/80 transition-colors">
+const ActionCard = ({ icon, title, example, onClick }: { icon: React.ReactNode, title: string, example: string, onClick?: () => void }) => (
+    <Card className="cursor-pointer hover:bg-card/80 transition-colors" onClick={onClick}>
         <CardContent className="p-4">
             <div className="flex items-center gap-3 mb-2">
                 {icon}
@@ -40,15 +41,21 @@ const ActionCard = ({ icon, title, example }: { icon: React.ReactNode, title: st
     </Card>
 );
 
-export function AiAssistantChat() {
+interface AiAssistantChatProps {
+    chat: Chat | null;
+    onSendMessage: (userMessage: Message, assistantMessage: Message) => void;
+}
+
+
+export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Generate a random user ID on mount for display purposes
-    setUserId(Math.random().toString(36).substring(2, 15));
-  }, []);
+    if (chat) {
+        setMessages(chat.messages)
+    }
+  }, [chat]);
 
   const form = useForm<ChatFormValues>({
     resolver: zodResolver(chatSchema),
@@ -57,14 +64,23 @@ export function AiAssistantChat() {
     },
   });
 
+  const handleActionCardClick = (message: string) => {
+    form.setValue("message", message);
+    form.handleSubmit(onSubmit)();
+  }
+
   const onSubmit: SubmitHandler<ChatFormValues> = async (data) => {
     setIsLoading(true);
-    const userMessageId = `user-${Date.now()}`;
-    const assistantMessageId = `assistant-${Date.now()}`;
+    const userMessageContent = data.message;
+    const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        role: 'user',
+        content: userMessageContent
+    };
+    
+    // Optimistically update UI
+    setMessages(prev => [...prev, userMessage]);
 
-    const userMessageContent = <p>{data.message}</p>;
-
-    setMessages((prev) => [...prev, { id: userMessageId, role: "user", content: userMessageContent }]);
 
     try {
       const result = await understandContextProvideSolutions({
@@ -79,15 +95,20 @@ export function AiAssistantChat() {
         </div>
       );
 
-      setMessages((prev) => [...prev, { id: assistantMessageId, role: "assistant", content: assistantMessageContent }]);
+      const assistantMessage: Message = {
+        id: `assistant-${Date.now()}`,
+        role: 'assistant',
+        content: assistantMessageContent,
+      };
+
+      onSendMessage(userMessage, assistantMessage);
+
       form.reset();
     } catch (error) {
       console.error(error);
       const errorMessageContent = <p className="text-destructive">An error occurred. Please try again.</p>;
-      setMessages((prev) => [
-        ...prev,
-        { id: `error-${Date.now()}`, role: "assistant", content: errorMessageContent },
-      ]);
+      const errorResponseMessage: Message = { id: `error-${Date.now()}`, role: "assistant", content: errorMessageContent };
+      onSendMessage(userMessage, errorResponseMessage);
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +118,7 @@ export function AiAssistantChat() {
   return (
     <div className="flex h-full flex-col">
       <ScrollArea className="flex-1">
-        <div className={cn("p-6 flex flex-col items-center justify-center", messages.length > 0 ? "" : "h-full")}>
+        <div className={cn("p-6 flex flex-col items-center", messages.length > 0 ? "" : "h-full justify-center")}>
           {messages.length === 0 && !isLoading ? (
             <div className="flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
@@ -106,9 +127,9 @@ export function AiAssistantChat() {
               </div>
               <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
-                <ActionCard icon={<Code />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" />
-                <ActionCard icon={<Bug />} title="Debug Code" example="e.g., 'Why is my useEffect running twice?'" />
-                <ActionCard icon={<FileText />} title="Explain Code" example="e.g., 'What does this Python script do?'" />
+                <ActionCard icon={<Code />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" onClick={() => handleActionCardClick("Create a React button with a primary variant.")} />
+                <ActionCard icon={<Bug />} title="Debug Code" example="e.g., 'Why is my useEffect running twice?'" onClick={() => handleActionCardClick("Why is my useEffect running twice?")} />
+                <ActionCard icon={<FileText />} title="Explain Code" example="e.g., 'What does this Python script do?'" onClick={() => handleActionCardClick("What does this Python script do?")} />
               </div>
             </div>
           ) : (

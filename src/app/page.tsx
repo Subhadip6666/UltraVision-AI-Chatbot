@@ -1,21 +1,60 @@
-import { AiAssistantChat } from '@/components/ai-assistant-chat';
+
+'use client';
+
+import { useState } from 'react';
+import { AiAssistantChat, type Message } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
-import { Plus, MessageSquare, BrainCircuit, Settings, LogOut, User, Bell, Code, FileCode, Bot, Pencil, Library, LayoutGrid, ChevronDown } from 'lucide-react';
+import { BrainCircuit, ChevronDown, LayoutGrid, Library, Pencil } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-
-const chatHistory = [
-  { id: '1', title: 'React component generation' },
-  { id: '2', title: 'Async/await promise handling' },
-  { id: '3', title: 'Data Scraping Script' },
-  { id: '4', title: 'Semantic layout' },
-  { id: '5', title: 'Flexbox layout' },
-  { id: '6', title: 'Python dictionary sorting' },
-  { id: '7', title: 'Java array manipulation' },
-];
+export interface Chat {
+  id: string;
+  title: string;
+  messages: Message[];
+}
 
 
 export default function Home() {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+
+  const handleNewChat = () => {
+    const newChat: Chat = {
+      id: `chat-${Date.now()}`,
+      title: 'New Chat',
+      messages: [],
+    };
+    setChats(prev => [newChat, ...prev]);
+    setActiveChatId(newChat.id);
+  };
+  
+  const getActiveChat = () => {
+    if (!activeChatId) return null;
+    return chats.find(chat => chat.id === activeChatId) ?? null;
+  }
+
+  const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
+     if (!activeChatId) {
+      const newChat: Chat = {
+        id: `chat-${Date.now()}`,
+        title: (userMessage.content as string).substring(0, 30) + '...',
+        messages: [userMessage, assistantMessage],
+      };
+      setChats(prev => [newChat, ...prev]);
+      setActiveChatId(newChat.id);
+     } else {
+        setChats(prev => prev.map(chat => {
+            if (chat.id === activeChatId) {
+                const newMessages = [...chat.messages, userMessage, assistantMessage];
+                // Update title if it is the first message
+                const newTitle = chat.messages.length === 0 ? (userMessage.content as string).substring(0, 30) + '...' : chat.title;
+                return {...chat, title: newTitle, messages: newMessages};
+            }
+            return chat;
+        }));
+     }
+  };
+
   return (
     <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
       <aside className="flex flex-col border-r bg-card text-card-foreground">
@@ -28,7 +67,7 @@ export default function Home() {
 
         <div className="flex-1 overflow-auto p-4">
           <nav className="space-y-1">
-            <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted">
+            <a href="#" onClick={handleNewChat} className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted">
                 <Pencil className="h-4 w-4" />
                 New chat
             </a>
@@ -41,21 +80,24 @@ export default function Home() {
                 GPTs
             </a>
           </nav>
-
-          <div className="mt-8">
-            <h3 className="px-3 text-xs font-semibold uppercase text-muted-foreground">Chats</h3>
-            <nav className="mt-2 space-y-1">
-                {chatHistory.map((chat) => (
-                    <a
-                    href="#"
-                    key={chat.id}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:text-foreground"
-                    >
-                    {chat.title}
-                    </a>
-                ))}
-            </nav>
-          </div>
+          
+          {chats.length > 0 && (
+            <div className="mt-8">
+              <h3 className="px-3 text-xs font-semibold uppercase text-muted-foreground">Chats</h3>
+              <nav className="mt-2 space-y-1">
+                  {chats.map((chat) => (
+                      <a
+                      href="#"
+                      key={chat.id}
+                      onClick={() => setActiveChatId(chat.id)}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-foreground ${activeChatId === chat.id ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
+                      >
+                      {chat.title}
+                      </a>
+                  ))}
+              </nav>
+            </div>
+          )}
         </div>
 
         <div className="mt-auto border-t p-4">
@@ -75,19 +117,13 @@ export default function Home() {
       <main className="flex flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-6">
             <div />
-            <div className="flex items-center gap-4">
-                 <Button variant="ghost" size="icon">
-                    <Bell className="h-5 w-5" />
-                    <span className="sr-only">Notifications</span>
-                </Button>
-                <Avatar className="h-9 w-9 border">
-                  <AvatarImage src="https://picsum.photos/100" alt="@user" />
-                  <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
-                </Avatar>
-            </div>
         </header>
         <div className="flex flex-1 flex-col">
-          <AiAssistantChat />
+          <AiAssistantChat 
+            key={activeChatId}
+            chat={getActiveChat()}
+            onSendMessage={handleSendMessage}
+           />
         </div>
       </main>
     </div>
