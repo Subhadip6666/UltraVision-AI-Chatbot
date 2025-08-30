@@ -16,7 +16,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const chatSchema = z.object({
   problemDescription: z.string().min(10, "Please describe your problem in at least 10 characters."),
-  codeContext: z.string().optional(),
 });
 
 type ChatFormValues = z.infer<typeof chatSchema>;
@@ -34,7 +33,6 @@ export function AiAssistantChat() {
     resolver: zodResolver(chatSchema),
     defaultValues: {
       problemDescription: "",
-      codeContext: "",
     },
   });
 
@@ -43,14 +41,7 @@ export function AiAssistantChat() {
 
     const userMessageContent = (
       <div>
-        <p className="font-semibold">Problem:</p>
         <p>{data.problemDescription}</p>
-        {data.codeContext && (
-          <>
-            <p className="mt-2 font-semibold">Code Context:</p>
-            <CodeBlock code={data.codeContext} className="mt-1" />
-          </>
-        )}
       </div>
     );
 
@@ -60,7 +51,7 @@ export function AiAssistantChat() {
       const result = await understandContextProvideSolutions({
         userRequest: data.problemDescription,
         problemDescription: data.problemDescription,
-        codeContext: data.codeContext || "No context provided.",
+        codeContext: "No context provided.",
       });
 
       const assistantMessageContent = (
@@ -89,8 +80,7 @@ export function AiAssistantChat() {
       <CardHeader>
         <CardTitle>AI Assistant</CardTitle>
         <CardDescription>
-          Describe your coding problem and provide any relevant code context. The AI will analyze it and suggest a
-          solution.
+          Describe your coding problem and the AI will analyze it and suggest a solution.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -156,25 +146,7 @@ export function AiAssistantChat() {
                     <FormItem>
                       <FormLabel>Problem / Question</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="e.g., How do I center a div?" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="codeContext"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Code Context (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Paste relevant code here..."
-                          {...field}
-                          rows={8}
-                          className="font-code"
-                        />
+                        <Textarea placeholder="e.g., How do I center a div?" {...field} rows={8} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

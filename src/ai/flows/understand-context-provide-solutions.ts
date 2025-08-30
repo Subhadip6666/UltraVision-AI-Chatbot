@@ -13,13 +13,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const UnderstandContextProvideSolutionsInputSchema = z.object({
-  codeContext: z
-    .string()
-    .describe('The surrounding code or context in which the problem exists.'),
   problemDescription: z
     .string()
     .describe('A detailed description of the coding problem.'),
   userRequest: z.string().describe('The specific request or question from the user.'),
+  codeContext: z.string().optional().describe('The surrounding code or context in which the problem exists.'),
 });
 export type UnderstandContextProvideSolutionsInput = z.infer<
   typeof UnderstandContextProvideSolutionsInputSchema
