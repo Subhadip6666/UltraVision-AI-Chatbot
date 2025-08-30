@@ -35,7 +35,7 @@ const ActionCard = ({ icon, title, example, onClick }: { icon: React.ReactNode, 
         <CardContent className="p-4">
             <div className="flex items-center gap-3 mb-2">
                 {icon}
-                <h3 className="font-semibold">{title}</h3>
+                <h3 className="font-semibold text-lg">{title}</h3>
             </div>
             <p className="text-sm text-muted-foreground">{example}</p>
         </CardContent>
@@ -126,14 +126,14 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
           {messages.length === 0 && !isLoading ? (
             <div className="flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
-                <BrainCircuit className="h-10 w-10 text-primary" />
-                <h2 className="text-4xl font-bold">UltraVision AI</h2>
+                <BrainCircuit className="h-12 w-12 text-primary" />
+                <h2 className="text-5xl font-bold">UltraVision AI</h2>
               </div>
               <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
-                <ActionCard icon={<Code />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" onClick={() => handleActionCardClick("Create a React button with a primary variant.")} />
-                <ActionCard icon={<Bug />} title="Debug Code" example="e.g., 'Why is my useEffect running twice?'" onClick={() => handleActionCardClick("Why is my useEffect running twice?")} />
-                <ActionCard icon={<FileText />} title="Explain Code" example="e.g., 'What does this Python script do?'" onClick={() => handleActionCardClick("What does this Python script do?")} />
+                <ActionCard icon={<Code className="h-5 w-5" />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" onClick={() => handleActionCardClick("Create a React button with a primary variant.")} />
+                <ActionCard icon={<Bug className="h-5 w-5" />} title="Debug Code" example="e.g., 'Why is my useEffect running twice?'" onClick={() => handleActionCardClick("Why is my useEffect running twice?")} />
+                <ActionCard icon={<FileText className="h-5 w-5" />} title="Explain Code" example="e.g., 'What does this Python script do?'" onClick={() => handleActionCardClick("What does this Python script do?")} />
               </div>
             </div>
           ) : (
