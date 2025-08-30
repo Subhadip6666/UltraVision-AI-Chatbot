@@ -73,6 +73,8 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
   }
 
   const onSubmit: SubmitHandler<ChatFormValues> = async (data) => {
+    if (isLoading || !data.message.trim()) return;
+    
     setIsLoading(true);
     const userMessageContent = data.message;
     const userMessage: Message = {
@@ -188,6 +190,12 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
                   className="min-h-[60px] w-full resize-none border-0 bg-transparent pr-40 pl-4 py-4 focus-visible:ring-0"
                   disabled={isLoading}
                   autoComplete="off"
+                   onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      form.handleSubmit(onSubmit)();
+                    }
+                  }}
                 />
                 <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
                     <Select defaultValue="generate">
