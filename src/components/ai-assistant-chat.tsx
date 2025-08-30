@@ -129,7 +129,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
                 <BrainCircuit className="h-12 w-12 text-primary" />
                 <h2 className="text-5xl font-bold">UltraVision AI</h2>
               </div>
-              <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
+              <p className="text-muted-foreground mb-8">Welcome to UltraVision AI, your partner in coding. Let's build something amazing together. What can I help you create, debug, or understand today?</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
                 <ActionCard icon={<Code className="h-5 w-5" />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" onClick={() => handleActionCardClick("Create a React button with a primary variant.")} />
                 <ActionCard icon={<Bug className="h-5 w-5" />} title="Debug Code" example="e.g., 'What is wrong in the code and How to fix it'" onClick={() => handleActionCardClick("What is wrong in the code and How to fix it")} />
