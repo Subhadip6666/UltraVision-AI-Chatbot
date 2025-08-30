@@ -97,9 +97,9 @@ export function AiAssistantChat() {
   return (
     <div className="flex h-full flex-col">
       <ScrollArea className="flex-1">
-        <div className={cn("p-6", messages.length === 0 && 'h-full')}>
+        <div className={cn("p-6 flex flex-col items-center justify-center", messages.length === 0 && 'h-full')}>
           {messages.length === 0 && !isLoading ? (
-            <div className="flex h-full flex-col items-center justify-center text-center">
+            <div className="flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
                 <BrainCircuit className="h-10 w-10 text-primary" />
                 <h2 className="text-4xl font-bold">UltraVision AI</h2>
@@ -112,7 +112,7 @@ export function AiAssistantChat() {
               </div>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-8 w-full">
             {messages.map((message) => (
               <div key={message.id} className={cn("flex items-start gap-4", message.role === "user" ? "" : "")}>
                 {message.role === "assistant" ? (
@@ -142,7 +142,7 @@ export function AiAssistantChat() {
             </div>
           )}
           {isLoading && (
-            <div className="flex items-start gap-4 mt-8">
+            <div className="flex items-start gap-4 mt-8 w-full">
               <Avatar className="h-9 w-9 border-2 border-primary">
                 <AvatarFallback className="bg-primary/20">
                   <BrainCircuit className="h-5 w-5 text-primary" />
@@ -169,7 +169,6 @@ export function AiAssistantChat() {
                 <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
                     <Select defaultValue="generate">
                         <SelectTrigger className="w-auto gap-2 bg-transparent">
-                            <Code className="h-4 w-4" />
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -192,6 +191,13 @@ export function AiAssistantChat() {
                             <SelectItem value="go">Go</SelectItem>
                             <SelectItem value="html">HTML</SelectItem>
                             <SelectItem value="css">CSS</SelectItem>
+                             <SelectItem value="cplusplus">C++</SelectItem>
+                            <SelectItem value="ruby">Ruby</SelectItem>
+                            <SelectItem value="php">PHP</SelectItem>
+                            <SelectItem value="swift">Swift</SelectItem>
+                            <SelectItem value="kotlin">Kotlin</SelectItem>
+                            <SelectItem value="rust">Rust</SelectItem>
+                            <SelectItem value="dart">Dart</SelectItem>
                         </SelectContent>
                     </Select>
                   <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
