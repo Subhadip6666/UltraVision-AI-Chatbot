@@ -6,7 +6,7 @@ import { understandContextProvideSolutions } from "@/ai/flows/understand-context
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, User, Send, BrainCircuit, Code, Bug, FileText } from "lucide-react";
+import { Loader2, User, Send, BrainCircuit, Bug, FileText } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { CodeBlock } from "./code-block";
@@ -16,6 +16,7 @@ import { Card, CardContent } from "./ui/card";
 import { Textarea } from "./ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import type { Chat } from "@/app/page";
+import { Code } from "lucide-react";
 
 const chatSchema = z.object({
   message: z.string().min(1, "Message cannot be empty."),
@@ -54,6 +55,8 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
   useEffect(() => {
     if (chat) {
         setMessages(chat.messages)
+    } else {
+        setMessages([]);
     }
   }, [chat]);
 
@@ -78,7 +81,6 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
         content: userMessageContent
     };
     
-    // Optimistically update UI
     setMessages(prev => [...prev, userMessage]);
 
 

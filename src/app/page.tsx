@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { AiAssistantChat, type Message } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, ChevronDown, LayoutGrid, Library, Pencil } from 'lucide-react';
+import { BrainCircuit, ChevronDown, Pencil } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export interface Chat {
@@ -19,13 +19,7 @@ export default function Home() {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
   const handleNewChat = () => {
-    const newChat: Chat = {
-      id: `chat-${Date.now()}`,
-      title: 'New Chat',
-      messages: [],
-    };
-    setChats(prev => [newChat, ...prev]);
-    setActiveChatId(newChat.id);
+    setActiveChatId(null);
   };
   
   const getActiveChat = () => {
