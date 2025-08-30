@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AiAssistantChat } from '@/components/ai-assistant-chat';
 import { CodeGenerator } from '@/components/code-generator';
 import { StepwiseGuide } from '@/components/stepwise-guide';
-import { Bot } from 'lucide-react';
+import { BrainCircuit } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
         <header className="mb-8 flex flex-col items-center text-center">
           <div className="mb-4 flex items-center gap-3">
             <div className="rounded-full bg-primary p-3 text-primary-foreground">
-              <Bot size={32} />
+              <BrainCircuit size={32} />
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl font-headline">
               UltraVision Assistant
