@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -133,7 +132,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
               <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
                 <ActionCard icon={<Code className="h-5 w-5" />} title="Generate Code" example="e.g., 'Create a React button with a primary variant.'" onClick={() => handleActionCardClick("Create a React button with a primary variant.")} />
-                <ActionCard icon={<Bug className="h-5 w-5" />} title="Debug Code" example="e.g., 'Why is my useEffect running twice?'" onClick={() => handleActionCardClick("Why is my useEffect running twice?")} />
+                <ActionCard icon={<Bug className="h-5 w-5" />} title="Debug Code" example="e.g., 'What is wrong in the code and How to fix it'" onClick={() => handleActionCardClick("What is wrong in the code and How to fix it")} />
                 <ActionCard icon={<FileText className="h-5 w-5" />} title="Explain Code" example="e.g., 'What does this code do and how?'" onClick={() => handleActionCardClick("What does this code do and how?")} />
               </div>
             </div>
@@ -187,7 +186,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <Textarea
                   {...form.register("message")}
-                  placeholder="e.g., 'Create a React button component with a primary variant.'"
+                  placeholder="Ready With Your Questions Today?"
                   className="min-h-[60px] w-full resize-none border-0 bg-transparent pr-40 pl-4 py-4 focus-visible:ring-0"
                   disabled={isLoading}
                   autoComplete="off"
