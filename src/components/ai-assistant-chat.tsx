@@ -97,7 +97,7 @@ export function AiAssistantChat() {
   return (
     <div className="flex h-full flex-col">
       <ScrollArea className="flex-1">
-        <div className={cn("p-6 flex flex-col items-center justify-center", messages.length === 0 && 'h-full')}>
+        <div className={cn("p-6 flex flex-col items-center justify-center", messages.length > 0 ? "" : "h-full")}>
           {messages.length === 0 && !isLoading ? (
             <div className="flex flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
@@ -161,7 +161,7 @@ export function AiAssistantChat() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <Textarea
                   {...form.register("message")}
-                  placeholder="e.g., 'Create a React button component with a primary variant.'"
+                  placeholder="Ready With Your Questions Today"
                   className="min-h-[60px] w-full resize-none border-0 bg-transparent pr-40 pl-4 py-4 focus-visible:ring-0"
                   disabled={isLoading}
                   autoComplete="off"
@@ -172,9 +172,9 @@ export function AiAssistantChat() {
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="generate"><div className="flex items-center gap-2"><Code className="h-4 w-4" />Generate Code</div></SelectItem>
-                            <SelectItem value="debug"><div className="flex items-center gap-2"><Bug className="h-4 w-4" />Debug Code</div></SelectItem>
-                            <SelectItem value="explain"><div className="flex items-center gap-2"><FileText className="h-4 w-4" />Explain Code</div></SelectItem>
+                            <SelectItem value="generate">Generate Code</SelectItem>
+                            <SelectItem value="debug">Debug Code</SelectItem>
+                            <SelectItem value="explain">Explain Code</SelectItem>
                         </SelectContent>
                     </Select>
 
