@@ -185,7 +185,12 @@ export function AiAssistantChat() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="javascript">JavaScript</SelectItem>
+                            <SelectItem value="typescript">TypeScript</SelectItem>
                             <SelectItem value="python">Python</SelectItem>
+                            <SelectItem value="java">Java</SelectItem>
+                            <SelectItem value="csharp">C#</SelectItem>
+                            <SelectItem value="go">Go</SelectItem>
+                            <SelectItem value="html">HTML</SelectItem>
                             <SelectItem value="css">CSS</SelectItem>
                         </SelectContent>
                     </Select>

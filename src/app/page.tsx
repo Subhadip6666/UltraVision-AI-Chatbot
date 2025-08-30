@@ -1,7 +1,7 @@
 import { AiAssistantChat } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Plus, MessageSquare, BrainCircuit, Settings, LogOut, User, Bell } from 'lucide-react';
+import { Plus, MessageSquare, BrainCircuit, Settings, LogOut, User, Bell, Code, FileCode, Bot } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 
@@ -19,6 +19,13 @@ const chatHistory = [
     language: 'Python',
     chats: [
         { id: 'py-1-1', title: 'Data Scraping Script' },
+    ]
+  },
+    {
+    id: 'html-1',
+    language: 'HTML',
+    chats: [
+        { id: 'html-1-1', title: 'Semantic layout' },
     ]
   },
   {
@@ -53,9 +60,10 @@ export default function Home() {
                   <AccordionItem value={group.language} key={group.id} className="border-b-0">
                     <AccordionTrigger className="text-sm font-medium hover:no-underline py-2 px-2">
                       <div className="flex items-center gap-2">
-                        {group.language === 'JavaScript' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M10 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"/><path d="M17 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"/></svg>}
-                        {group.language === 'Python' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M14.5 11h-5L11 15h3l-2.5 4"/><path d="M14 8a2 2 0 1 0-4 0"/><path d="M17.5 11h2l-2 5.5"/><path d="m20 18-2 2-2-2"/><path d="M10 8a2 2 0 1 1-4 0"/><path d="M6.5 11h-2l2 5.5"/><path d="m4 18 2 2 2-2"/></svg>}
-                        {group.language === 'CSS' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+                        {group.language === 'JavaScript' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M10 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"></path><path d="M17 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"></path></svg>}
+                        {group.language === 'Python' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M14.5 11h-5L11 15h3l-2.5 4"></path><path d="M14 8a2 2 0 1 0-4 0"></path><path d="M17.5 11h2l-2 5.5"></path><path d="m20 18-2 2-2-2"></path><path d="M10 8a2 2 0 1 1-4 0"></path><path d="M6.5 11h-2l2 5.5"></path><path d="m4 18 2 2 2-2"></path></svg>}
+                        {group.language === 'HTML' && <Code className="h-4 w-4" />}
+                        {group.language === 'CSS' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>}
                         {group.language}
                       </div>
                     </AccordionTrigger>
