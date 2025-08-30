@@ -104,7 +104,7 @@ export function AiAssistantChat() {
             <div className="flex h-full flex-col items-center justify-center text-center -mt-8">
               <div className="flex items-center gap-4 mb-4">
                 <BrainCircuit className="h-10 w-10 text-foreground" />
-                <h2 className="text-4xl font-bold">Code Sensei</h2>
+                <h2 className="text-4xl font-bold">UltraVision AI</h2>
               </div>
               <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
@@ -136,7 +136,7 @@ export function AiAssistantChat() {
                     message.role === "user" ? "" : "bg-card"
                   )}
                 >
-                    <span className="font-bold mb-2 block">{message.role === 'user' ? 'You' : 'Code Sensei'}</span>
+                    <span className="font-bold mb-2 block">{message.role === 'user' ? 'You' : 'UltraVision AI'}</span>
                   {message.content}
                 </div>
               </div>

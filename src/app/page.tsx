@@ -37,7 +37,7 @@ export default function Home() {
       <aside className="flex flex-col border-r bg-card text-card-foreground">
         <header className="flex h-16 shrink-0 items-center gap-4 border-b px-6">
           <BrainCircuit className="h-6 w-6" />
-          <h2 className="text-lg font-semibold">Code Sensei</h2>
+          <h2 className="text-lg font-semibold">UltraVision AI</h2>
         </header>
 
         <div className="flex-1 overflow-auto p-4">
