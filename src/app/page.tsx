@@ -1,7 +1,55 @@
 import { AiAssistantChat } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Plus, MessageSquare, BrainCircuit, Sparkles } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Plus, MessageSquare, Sparkles, Code, Shell, FileJson } from 'lucide-react';
+
+const chatHistory = [
+  {
+    id: 'py-1',
+    language: 'Python',
+    title: 'Data Scraping Script',
+    icon: <Code className="h-4 w-4" />,
+  },
+  {
+    id: 'js-1',
+    language: 'JavaScript',
+    title: 'React Component',
+    icon: <Code className="h-4 w-4" />,
+  },
+  {
+    id: 'js-2',
+    language: 'JavaScript',
+    title: 'API Fetch Logic',
+    icon: <Code className="h-4 w-4" />,
+  },
+  {
+    id: 'sh-1',
+    language: 'Shell',
+    title: 'Deployment Script',
+    icon: <Shell className="h-4 w-4" />,
+  },
+  {
+    id: 'json-1',
+    language: 'JSON',
+    title: 'Config file',
+    icon: <FileJson className="h-4 w-4" />,
+  },
+  {
+    id: 'py-2',
+    language: 'Python',
+    title: 'Flask API route',
+    icon: <Code className="h-4 w-4" />,
+  },
+];
+
+const groupedChats = chatHistory.reduce((acc, chat) => {
+  if (!acc[chat.language]) {
+    acc[chat.language] = [];
+  }
+  acc[chat.language].push(chat);
+  return acc;
+}, {} as Record<string, typeof chatHistory>);
+
 
 export default function Home() {
   return (
@@ -15,16 +63,32 @@ export default function Home() {
             <Plus className="mr-2 h-4 w-4" />
             New Chat
           </Button>
-          <nav className="mt-4 space-y-1">
-            {/* Placeholder for chat history items */}
-            <a
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Initial Prompt
-            </a>
-          </nav>
+          <Accordion type="multiple" className="w-full mt-4" defaultValue={Object.keys(groupedChats)}>
+            {Object.entries(groupedChats).map(([language, chats]) => (
+                <AccordionItem value={language} key={language}>
+                  <AccordionTrigger className="text-sm font-semibold capitalize hover:no-underline">
+                    <div className="flex items-center gap-2">
+                        {chats[0].icon}
+                        {language}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <nav className="space-y-1">
+                      {chats.map((chat) => (
+                        <a
+                          href="#"
+                          key={chat.id}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ml-4"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                          {chat.title}
+                        </a>
+                      ))}
+                    </nav>
+                  </AccordionContent>
+                </AccordionItem>
+            ))}
+            </Accordion>
         </div>
         <div className="mt-auto border-t p-6">
           <div className="text-sm font-semibold">User ID:</div>
