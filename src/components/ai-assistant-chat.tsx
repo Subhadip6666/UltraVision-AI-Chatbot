@@ -3,15 +3,13 @@
 import { useState, useEffect } from "react";
 import { understandContextProvideSolutions } from "@/ai/flows/understand-context-provide-solutions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, User, Send, BrainCircuit, Code, Bug, FileText, ChevronDown } from "lucide-react";
+import { Loader2, User, Send, BrainCircuit, Code, Bug, FileText } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { CodeBlock } from "./code-block";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AnimatePresence, motion } from "framer-motion";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import { Textarea } from "./ui/textarea";
@@ -103,7 +101,7 @@ export function AiAssistantChat() {
           {messages.length === 0 && !isLoading ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
-                <BrainCircuit className="h-10 w-10 text-foreground" />
+                <BrainCircuit className="h-10 w-10 text-primary" />
                 <h2 className="text-4xl font-bold">UltraVision AI</h2>
               </div>
               <p className="text-muted-foreground mb-8">Your AI-powered coding assistant. Start by generating, explaining, or debugging code below.</p>
@@ -118,14 +116,13 @@ export function AiAssistantChat() {
             {messages.map((message) => (
               <div key={message.id} className={cn("flex items-start gap-4", message.role === "user" ? "" : "")}>
                 {message.role === "assistant" ? (
-                  <Avatar className="h-9 w-9 border">
-                    <AvatarFallback>
-                      <BrainCircuit className="h-5 w-5" />
+                  <Avatar className="h-9 w-9 border-2 border-primary">
+                    <AvatarFallback className="bg-primary/20">
+                      <BrainCircuit className="h-5 w-5 text-primary" />
                     </AvatarFallback>
                   </Avatar>
                 ) : (
                    <Avatar className="h-9 w-9 border">
-                    <AvatarImage src="https://picsum.photos/100" alt="@user" />
                     <AvatarFallback>
                       <User className="h-5 w-5" />
                     </AvatarFallback>
@@ -146,9 +143,9 @@ export function AiAssistantChat() {
           )}
           {isLoading && (
             <div className="flex items-start gap-4 mt-8">
-              <Avatar className="h-9 w-9 border">
-                <AvatarFallback>
-                  <BrainCircuit className="h-5 w-5" />
+              <Avatar className="h-9 w-9 border-2 border-primary">
+                <AvatarFallback className="bg-primary/20">
+                  <BrainCircuit className="h-5 w-5 text-primary" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex items-center rounded-lg bg-card px-4 py-3">
@@ -192,7 +189,7 @@ export function AiAssistantChat() {
                             <SelectItem value="css">CSS</SelectItem>
                         </SelectContent>
                     </Select>
-                  <Button type="submit" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" disabled={isLoading}>
+                  <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     <span className="sr-only">Send</span>
                   </Button>

@@ -1,7 +1,7 @@
 import { AiAssistantChat } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Plus, MessageSquare, Code, Shell, FileJson, Settings, LogOut, Book, User, Bell, BrainCircuit } from 'lucide-react';
+import { Plus, MessageSquare, BrainCircuit, Settings, LogOut, User, Bell } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 
@@ -36,12 +36,12 @@ export default function Home() {
     <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
       <aside className="flex flex-col border-r bg-card text-card-foreground">
         <header className="flex h-16 shrink-0 items-center gap-4 border-b px-6">
-          <BrainCircuit className="h-6 w-6" />
+          <BrainCircuit className="h-6 w-6 text-primary" />
           <h2 className="text-lg font-semibold">UltraVision AI</h2>
         </header>
 
         <div className="flex-1 overflow-auto p-4">
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="mr-2 h-4 w-4" />
             New Chat
           </Button>
@@ -52,7 +52,12 @@ export default function Home() {
               {chatHistory.map((group) => (
                   <AccordionItem value={group.language} key={group.id} className="border-b-0">
                     <AccordionTrigger className="text-sm font-medium hover:no-underline py-2 px-2">
-                      {group.language}
+                      <div className="flex items-center gap-2">
+                        {group.language === 'JavaScript' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M10 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"/><path d="M17 18h1a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4h-1v11z"/></svg>}
+                        {group.language === 'Python' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M14.5 11h-5L11 15h3l-2.5 4"/><path d="M14 8a2 2 0 1 0-4 0"/><path d="M17.5 11h2l-2 5.5"/><path d="m20 18-2 2-2-2"/><path d="M10 8a2 2 0 1 1-4 0"/><path d="M6.5 11h-2l2 5.5"/><path d="m4 18 2 2 2-2"/></svg>}
+                        {group.language === 'CSS' && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+                        {group.language}
+                      </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-0">
                       <nav className="space-y-1">
@@ -89,12 +94,7 @@ export default function Home() {
       </aside>
       <main className="flex flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-6">
-            <div className="flex items-center gap-4">
-                <Button variant="ghost">
-                    <Book className="mr-2 h-4 w-4" />
-                    Teach me
-                </Button>
-            </div>
+            <div />
             <div className="flex items-center gap-4">
                  <Button variant="ghost" size="icon">
                     <Bell className="h-5 w-5" />
