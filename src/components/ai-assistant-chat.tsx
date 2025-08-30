@@ -98,10 +98,10 @@ export function AiAssistantChat() {
 
   return (
     <div className="flex h-full flex-col">
-      <ScrollArea className="flex-1 p-6">
-        <div className="space-y-8">
+      <ScrollArea className="flex-1">
+        <div className={cn("p-6", messages.length === 0 && 'h-full')}>
           {messages.length === 0 && !isLoading ? (
-            <div className="flex h-full flex-col items-center justify-center text-center -mt-8">
+            <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="flex items-center gap-4 mb-4">
                 <BrainCircuit className="h-10 w-10 text-foreground" />
                 <h2 className="text-4xl font-bold">UltraVision AI</h2>
@@ -114,7 +114,8 @@ export function AiAssistantChat() {
               </div>
             </div>
           ) : (
-            messages.map((message) => (
+            <div className="space-y-8">
+            {messages.map((message) => (
               <div key={message.id} className={cn("flex items-start gap-4", message.role === "user" ? "" : "")}>
                 {message.role === "assistant" ? (
                   <Avatar className="h-9 w-9 border">
@@ -140,10 +141,11 @@ export function AiAssistantChat() {
                   {message.content}
                 </div>
               </div>
-            ))
+            ))}
+            </div>
           )}
           {isLoading && (
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 mt-8">
               <Avatar className="h-9 w-9 border">
                 <AvatarFallback>
                   <BrainCircuit className="h-5 w-5" />
