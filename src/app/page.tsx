@@ -35,18 +35,17 @@ export default function Home() {
 
   const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
      if (!activeChatId) {
-      const newChat: Chat = {
-        id: `chat-${Date.now()}`,
-        title: (userMessage.content as string).substring(0, 30) + '...',
-        messages: [userMessage, assistantMessage],
-      };
-      setChats(prev => [newChat, ...prev]);
-      setActiveChatId(newChat.id);
+        const newChat: Chat = {
+            id: `chat-${Date.now()}`,
+            title: (userMessage.content as string).substring(0, 30) + '...',
+            messages: [userMessage, assistantMessage],
+        };
+        setChats(prev => [newChat, ...prev]);
+        setActiveChatId(newChat.id);
      } else {
         setChats(prev => prev.map(chat => {
             if (chat.id === activeChatId) {
                 const newMessages = [...chat.messages, userMessage, assistantMessage];
-                // Update title if it is the first message
                 const newTitle = chat.messages.length === 0 ? (userMessage.content as string).substring(0, 30) + '...' : chat.title;
                 return {...chat, title: newTitle, messages: newMessages};
             }
@@ -67,18 +66,18 @@ export default function Home() {
 
         <div className="flex-1 overflow-auto p-4">
           <nav className="space-y-1">
-            <a href="#" onClick={handleNewChat} className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted">
+            <Button variant="ghost" className="w-full justify-start gap-3" onClick={handleNewChat}>
                 <Pencil className="h-4 w-4" />
                 New chat
-            </a>
-            <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground">
+            </Button>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground" disabled>
                 <Library className="h-4 w-4" />
                 Library
-            </a>
-            <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground">
+            </Button>
+            <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground" disabled>
                 <LayoutGrid className="h-4 w-4" />
                 GPTs
-            </a>
+            </Button>
           </nav>
           
           {chats.length > 0 && (
@@ -89,7 +88,10 @@ export default function Home() {
                       <a
                       href="#"
                       key={chat.id}
-                      onClick={() => setActiveChatId(chat.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveChatId(chat.id)
+                      }}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-foreground ${activeChatId === chat.id ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                       >
                       {chat.title}
@@ -101,7 +103,7 @@ export default function Home() {
         </div>
 
         <div className="mt-auto border-t p-4">
-            <div className="flex items-center gap-3">
+            <div className="flex cursor-pointer items-center gap-3">
                 <Avatar className="h-9 w-9 border">
                   <AvatarImage src="https://picsum.photos/100" alt="@user" />
                   <AvatarFallback>SP</AvatarFallback>
