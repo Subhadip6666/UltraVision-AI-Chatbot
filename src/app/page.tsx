@@ -70,14 +70,6 @@ export default function Home() {
                 <Pencil className="h-4 w-4" />
                 New chat
             </Button>
-            <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground" disabled>
-                <Library className="h-4 w-4" />
-                Library
-            </Button>
-            <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground" disabled>
-                <LayoutGrid className="h-4 w-4" />
-                GPTs
-            </Button>
           </nav>
           
           {chats.length > 0 && (
