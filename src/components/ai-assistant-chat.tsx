@@ -1,26 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { understandContextProvideSolutions } from "@/ai/flows/understand-context-provide-solutions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Bot, Loader2, Send, User } from "lucide-react";
+import { Bot, Loader2, User, Send, BrainCircuit, GripVertical } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { CodeBlock } from "./code-block";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sparkles } from "lucide-react";
 
 const chatSchema = z.object({
-  problemDescription: z.string().min(10, "Please describe your problem in at least 10 characters."),
+  message: z.string().min(1, "Message cannot be empty."),
 });
 
 type ChatFormValues = z.infer<typeof chatSchema>;
 
 interface Message {
+  id: string;
   role: "user" | "assistant";
   content: React.ReactNode;
 }
@@ -28,30 +29,33 @@ interface Message {
 export function AiAssistantChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Generate a random user ID on mount for display purposes
+    setUserId(Math.random().toString(36).substring(2, 15));
+  }, []);
 
   const form = useForm<ChatFormValues>({
     resolver: zodResolver(chatSchema),
     defaultValues: {
-      problemDescription: "",
+      message: "",
     },
   });
 
   const onSubmit: SubmitHandler<ChatFormValues> = async (data) => {
     setIsLoading(true);
+    const userMessageId = `user-${Date.now()}`;
+    const assistantMessageId = `assistant-${Date.now()}`;
 
-    const userMessageContent = (
-      <div>
-        <p>{data.problemDescription}</p>
-      </div>
-    );
+    const userMessageContent = <p>{data.message}</p>;
 
-    setMessages((prev) => [...prev, { role: "user", content: userMessageContent }]);
+    setMessages((prev) => [...prev, { id: userMessageId, role: "user", content: userMessageContent }]);
 
     try {
       const result = await understandContextProvideSolutions({
-        userRequest: data.problemDescription,
-        problemDescription: data.problemDescription,
-        codeContext: "No context provided.",
+        userRequest: data.message,
+        problemDescription: data.message,
       });
 
       const assistantMessageContent = (
@@ -61,108 +65,102 @@ export function AiAssistantChat() {
         </div>
       );
 
-      setMessages((prev) => [...prev, { role: "assistant", content: assistantMessageContent }]);
+      setMessages((prev) => [...prev, { id: assistantMessageId, role: "assistant", content: assistantMessageContent }]);
       form.reset();
     } catch (error) {
       console.error(error);
-      const errorMessage = {
-        role: "assistant" as const,
-        content: <p className="text-destructive">An error occurred. Please try again.</p>,
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      const errorMessageContent = <p className="text-destructive">An error occurred. Please try again.</p>;
+      setMessages((prev) => [
+        ...prev,
+        { id: `error-${Date.now()}`, role: "assistant", content: errorMessageContent },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>AI Assistant</CardTitle>
-        <CardDescription>
-          Describe your coding problem and the AI will analyze it and suggest a solution.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="md:col-span-1">
-            <h3 className="mb-4 text-lg font-semibold">Chat History</h3>
-            <ScrollArea className="h-[400px] w-full rounded-md border p-4">
-              <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}
-                  >
-                    {message.role === 'assistant' && (
-                      <Avatar className="h-9 w-9 border">
-                        <AvatarFallback>
-                          <Bot className="h-5 w-5" />
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                    <div
-                      className={`max-w-[85%] rounded-lg px-4 py-3 ${
-                        message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                    {message.role === 'user' && (
-                      <Avatar className="h-9 w-9 border">
-                        <AvatarFallback>
-                          <User className="h-5 w-5" />
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex items-start gap-3">
-                    <Avatar className="h-9 w-9 border">
-                      <AvatarFallback>
-                        <Bot className="h-5 w-5" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex items-center rounded-lg bg-muted px-4 py-3">
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      <span>Thinking...</span>
-                    </div>
-                  </div>
+    <div className="flex h-full flex-col">
+      <ScrollArea className="flex-1 p-6">
+        <div className="space-y-6">
+          {messages.length === 0 && !isLoading ? (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <BrainCircuit className="mb-4 h-16 w-16 text-primary" />
+              <h2 className="text-3xl font-bold">UltraVision AI</h2>
+              <p className="text-muted-foreground">Your AI-powered chat assistant. Start a new conversation!</p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <div key={message.id} className={`flex items-start gap-4 ${message.role === "user" ? "justify-end" : ""}`}>
+                {message.role === "assistant" && (
+                  <Avatar className="h-9 w-9 border">
+                    <AvatarFallback>
+                      <Bot className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
                 )}
-                {messages.length === 0 && !isLoading && (
-                  <p className="text-center text-muted-foreground">Your chat history will appear here.</p>
+                <div
+                  className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                  }`}
+                >
+                  {message.content}
+                </div>
+                {message.role === "user" && (
+                  <Avatar className="h-9 w-9 border">
+                    <AvatarFallback>
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
                 )}
               </div>
-            </ScrollArea>
-          </div>
-          <div className="md:col-span-2">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="problemDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Problem / Question</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g., How do I center a div?" {...field} rows={8} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex justify-end">
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : <Send />}
-                    Send
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </div>
+            ))
+          )}
+          {isLoading && (
+            <div className="flex items-start gap-4">
+              <Avatar className="h-9 w-9 border">
+                <AvatarFallback>
+                  <Bot className="h-5 w-5" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex items-center rounded-lg bg-muted px-4 py-3">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <span>Thinking...</span>
+              </div>
+            </div>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </ScrollArea>
+      <div className="border-t bg-background p-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
+          <Input
+            {...form.register("message")}
+            placeholder="Type your message..."
+            className="h-12 w-full rounded-full bg-muted pr-24 pl-6"
+            disabled={isLoading}
+            autoComplete="off"
+          />
+          <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
+             <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <GripVertical />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-1">
+                 <Button variant="ghost" size="sm" className="w-full justify-start">
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Enhance
+                 </Button>
+              </PopoverContent>
+            </Popover>
+            <Button type="submit" size="icon" className="h-9 w-9 rounded-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+              <span className="sr-only">Send</span>
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

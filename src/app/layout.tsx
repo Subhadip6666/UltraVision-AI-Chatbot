@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'UltraVision Assistant',
-  description: 'Your intelligent partner for coding.',
+  title: 'UltraVision AI',
+  description: 'Your AI-powered chat assistant.',
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={cn('font-body antialiased', 'min-h-screen bg-background font-sans')}
+        className={cn('font-sans antialiased', 'min-h-screen bg-background')}
         suppressHydrationWarning
       >
         {children}
