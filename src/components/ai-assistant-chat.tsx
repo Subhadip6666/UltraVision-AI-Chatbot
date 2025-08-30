@@ -13,6 +13,9 @@ import { CodeBlock } from "./code-block";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
 
 const chatSchema = z.object({
   message: z.string().min(1, "Message cannot be empty."),
@@ -79,6 +82,8 @@ export function AiAssistantChat() {
     }
   };
 
+  const showInput = messages.length > 0 || isLoading;
+
   return (
     <div className="flex h-full flex-col">
       <ScrollArea className="flex-1 p-6">
@@ -91,7 +96,7 @@ export function AiAssistantChat() {
             </div>
           ) : (
             messages.map((message) => (
-              <div key={message.id} className={`flex items-start gap-4 ${message.role === "user" ? "justify-end" : ""}`}>
+              <div key={message.id} className={cn("flex items-start gap-4", message.role === "user" ? "justify-end" : "")}>
                 {message.role === "assistant" && (
                   <Avatar className="h-9 w-9 border">
                     <AvatarFallback>
@@ -100,9 +105,10 @@ export function AiAssistantChat() {
                   </Avatar>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                  className={cn(
+                    "max-w-[80%] rounded-lg px-4 py-3",
                     message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
+                  )}
                 >
                   {message.content}
                 </div>
@@ -131,36 +137,78 @@ export function AiAssistantChat() {
           )}
         </div>
       </ScrollArea>
-      <div className="border-t bg-background p-4">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
-          <Input
-            {...form.register("message")}
-            placeholder="Type your message..."
-            className="h-12 w-full rounded-full bg-muted pr-24 pl-6"
-            disabled={isLoading}
-            autoComplete="off"
-          />
-          <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
-             <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <GripVertical />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-1">
-                 <Button variant="ghost" size="sm" className="w-full justify-start">
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Enhance
-                 </Button>
-              </PopoverContent>
-            </Popover>
-            <Button type="submit" size="icon" className="h-9 w-9 rounded-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-              <span className="sr-only">Send</span>
-            </Button>
-          </div>
-        </form>
-      </div>
+       <AnimatePresence>
+        {showInput && (
+           <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="border-t bg-background p-4"
+           >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
+                <Input
+                  {...form.register("message")}
+                  placeholder="Type your message..."
+                  className="h-12 w-full rounded-full bg-muted pr-24 pl-6"
+                  disabled={isLoading}
+                  autoComplete="off"
+                />
+                <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
+                   <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="icon" className="rounded-full">
+                        <GripVertical />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-1">
+                       <Button variant="ghost" size="sm" className="w-full justify-start">
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          Enhance
+                       </Button>
+                    </PopoverContent>
+                  </Popover>
+                  <Button type="submit" size="icon" className="h-9 w-9 rounded-full" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+                    <span className="sr-only">Send</span>
+                  </Button>
+                </div>
+              </form>
+           </motion.div>
+         )}
+       </AnimatePresence>
+       {!showInput && (
+         <div className="border-t bg-background p-4">
+           <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
+             <Input
+               {...form.register("message")}
+               placeholder="Type your message..."
+               className="h-12 w-full rounded-full bg-muted pr-24 pl-6"
+               disabled={isLoading}
+               autoComplete="off"
+             />
+             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
+               <Popover>
+                 <PopoverTrigger asChild>
+                   <Button variant="ghost" size="icon" className="rounded-full">
+                     <GripVertical />
+                   </Button>
+                 </PopoverTrigger>
+                 <PopoverContent className="w-auto p-1">
+                   <Button variant="ghost" size="sm" className="w-full justify-start">
+                     <Sparkles className="mr-2 h-4 w-4" />
+                     Enhance
+                   </Button>
+                 </PopoverContent>
+               </Popover>
+               <Button type="submit" size="icon" className="h-9 w-9 rounded-full" disabled={isLoading}>
+                 {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+                 <span className="sr-only">Send</span>
+               </Button>
+             </div>
+           </form>
+         </div>
+       )}
     </div>
   );
 }
