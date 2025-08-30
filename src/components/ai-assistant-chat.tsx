@@ -100,7 +100,7 @@ export function AiAssistantChat() {
                 {message.role === "assistant" && (
                   <Avatar className="h-9 w-9 border">
                     <AvatarFallback>
-                      <Bot className="h-5 w-5" />
+                      <BrainCircuit className="h-5 w-5" />
                     </AvatarFallback>
                   </Avatar>
                 )}
@@ -126,7 +126,7 @@ export function AiAssistantChat() {
             <div className="flex items-start gap-4">
               <Avatar className="h-9 w-9 border">
                 <AvatarFallback>
-                  <Bot className="h-5 w-5" />
+                  <BrainCircuit className="h-5 w-5" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex items-center rounded-lg bg-muted px-4 py-3">
