@@ -92,10 +92,10 @@ export default function Home() {
             <div className="flex cursor-pointer items-center gap-3">
                 <Avatar className="h-9 w-9 border">
                   <AvatarImage src="https://picsum.photos/100" alt="@user" />
-                  <AvatarFallback>SP</AvatarFallback>
+                  <AvatarFallback>U</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                    <p className="text-sm font-semibold">Subhadip Patra</p>
+                    <p className="text-sm font-semibold">User</p>
                     <p className="text-xs text-muted-foreground">Free</p>
                 </div>
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
