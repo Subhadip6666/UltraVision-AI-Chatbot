@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Loader2, BookOpenCheck, X } from "lucide-react";
+import { Loader2, BookOpenCheck, X, CheckCircle, XCircle } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
@@ -34,6 +34,9 @@ export function Quiz({ onExitQuiz }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState(0);
+  const [isQuizFinished, setIsQuizFinished] = useState(false);
 
   const handleStartQuiz = async () => {
     if (!language) return;
@@ -44,6 +47,9 @@ export function Quiz({ onExitQuiz }: QuizProps) {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
     setShowAnswer(false);
+    setCorrectAnswers(0);
+    setIncorrectAnswers(0);
+    setIsQuizFinished(false);
 
     try {
       const result = await generateQuiz({ language });
@@ -56,6 +62,17 @@ export function Quiz({ onExitQuiz }: QuizProps) {
     }
   };
 
+  const handleCheckAnswer = () => {
+    if (!selectedAnswer) return;
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    if (isCorrect) {
+      setCorrectAnswers(prev => prev + 1);
+    } else {
+      setIncorrectAnswers(prev => prev + 1);
+    }
+    setShowAnswer(true);
+  }
+
   const handleNextQuestion = () => {
     if (currentQuestionIndex < quiz.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
@@ -63,17 +80,63 @@ export function Quiz({ onExitQuiz }: QuizProps) {
       setShowAnswer(false);
     } else {
       // End of quiz
-      handleFinishQuiz();
+      setIsQuizFinished(true);
     }
   };
   
-  const handleFinishQuiz = () => {
+  const handleResetQuiz = () => {
     setQuiz([]);
     setLanguage("");
+    setIsQuizFinished(false);
+    setCorrectAnswers(0);
+    setIncorrectAnswers(0);
   }
 
-
   const currentQuestion = quiz[currentQuestionIndex];
+
+  if (isQuizFinished) {
+    return (
+        <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+             <Card className="w-full max-w-md">
+                <CardHeader>
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="p-3 mb-4 bg-primary/10 rounded-full">
+                            <BookOpenCheck className="h-8 w-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl">Quiz Results</CardTitle>
+                        <CardDescription className="mt-2">Here's how you did on the {language} quiz.</CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex justify-around mb-6">
+                        <div className="text-center">
+                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-green-500">
+                                <CheckCircle />
+                                {correctAnswers}
+                            </div>
+                            <p className="text-muted-foreground">Correct</p>
+                        </div>
+                         <div className="text-center">
+                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-red-500">
+                                <XCircle />
+                                {incorrectAnswers}
+                            </div>
+                            <p className="text-muted-foreground">Incorrect</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <Button onClick={handleResetQuiz} className="w-full">
+                            Take New Quiz
+                        </Button>
+                        <Button variant="outline" onClick={onExitQuiz} className="w-full">
+                            Exit
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
 
   if (quiz.length === 0) {
     return (
@@ -119,7 +182,7 @@ export function Quiz({ onExitQuiz }: QuizProps) {
   return (
     <div className="flex flex-col items-center justify-center h-full p-8">
         <Card className="w-full max-w-2xl relative">
-             <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onExitQuiz}>
+             <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={() => setIsQuizFinished(true)}>
                 <X className="h-4 w-4" />
                 <span className="sr-only">Exit Quiz</span>
             </Button>
@@ -166,7 +229,7 @@ export function Quiz({ onExitQuiz }: QuizProps) {
                             {currentQuestionIndex < quiz.length - 1 ? "Next Question" : "Finish Quiz"}
                         </Button>
                     ) : (
-                        <Button onClick={() => setShowAnswer(true)} disabled={!selectedAnswer}>
+                        <Button onClick={handleCheckAnswer} disabled={!selectedAnswer}>
                             Check Answer
                         </Button>
                     )}
