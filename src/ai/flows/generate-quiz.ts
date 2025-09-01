@@ -17,7 +17,8 @@ const GenerateQuizInputSchema = z.object({
 export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
 
 const QuizQuestionSchema = z.object({
-    question: z.string().describe('The quiz question.'),
+    question: z.string().describe('The quiz question text.'),
+    codeSnippet: z.string().optional().describe('An optional, well-formatted code snippet relevant to the question.'),
     options: z.array(z.string()).describe('An array of 4 multiple-choice options.'),
     correctAnswer: z.string().describe('The correct answer from the options array.'),
     explanation: z.string().describe('A brief explanation of why the answer is correct.'),
@@ -41,7 +42,9 @@ const prompt = ai.definePrompt({
   
   The questions should cover a range of topics from beginner to intermediate.
   For each question, provide 4 options, one of which is the correct answer.
-  Also provide a brief explanation for the correct answer.`,
+  Also provide a brief explanation for the correct answer.
+  
+  If a question requires a code example, provide it in the 'codeSnippet' field. Ensure the code is well-formatted.`,
 });
 
 const generateQuizFlow = ai.defineFlow(

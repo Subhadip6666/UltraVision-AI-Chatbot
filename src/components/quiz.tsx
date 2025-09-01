@@ -16,6 +16,7 @@ import { Loader2, BookOpenCheck, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
+import { CodeBlock } from "./code-block";
 
 const languages = [
   "JavaScript", "TypeScript", "Python", "Java", "C#", "Go", "Rust", "Ruby", "PHP", "Swift", "Kotlin", "Dart"
@@ -128,6 +129,13 @@ export function Quiz({ onExitQuiz }: QuizProps) {
             </CardHeader>
             <CardContent>
                 <h3 className="text-lg font-semibold mb-4">{currentQuestion.question}</h3>
+                {currentQuestion.codeSnippet && (
+                    <CodeBlock 
+                        code={currentQuestion.codeSnippet} 
+                        language={language.toLowerCase()}
+                        className="mb-4"
+                    />
+                )}
                 
                 <RadioGroup 
                   value={selectedAnswer ?? ''}
