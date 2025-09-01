@@ -4,8 +4,9 @@
 import { useState } from 'react';
 import { AiAssistantChat, type Message } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, ChevronDown, Pencil } from 'lucide-react';
+import { BrainCircuit, ChevronDown, Pencil, BookOpenCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Quiz } from '@/components/quiz';
 
 export interface Chat {
   id: string;
@@ -17,9 +18,11 @@ export interface Chat {
 export default function Home() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<'chat' | 'quiz'>('chat');
 
   const handleNewChat = () => {
     setActiveChatId(null);
+    setActiveView('chat');
   };
   
   const getActiveChat = () => {
@@ -28,24 +31,24 @@ export default function Home() {
   }
 
   const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
+    const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
+  
     setChats(prevChats => {
-      const existingChat = prevChats.find(chat => chat.id === activeChatId);
+      const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
       
-      if (existingChat) {
+      if (existingChatIndex > -1) {
         // Update existing chat
-        return prevChats.map(chat => {
-          if (chat.id === activeChatId) {
-            return {
-              ...chat,
-              messages: [...chat.messages, userMessage, assistantMessage],
-            };
-          }
-          return chat;
-        });
+        const updatedChats = [...prevChats];
+        const updatedChat = {
+          ...updatedChats[existingChatIndex],
+          messages: [...updatedChats[existingChatIndex].messages, userMessage, assistantMessage],
+        };
+        updatedChats[existingChatIndex] = updatedChat;
+        return updatedChats;
       } else {
         // Create new chat
         const newChat: Chat = {
-          id: `chat-${Date.now()}`,
+          id: chatToUpdateId,
           title: (userMessage.content as string).substring(0, 30) + '...',
           messages: [userMessage, assistantMessage],
         };
@@ -53,6 +56,10 @@ export default function Home() {
         return [newChat, ...prevChats];
       }
     });
+  
+    if (!activeChatId) {
+      setActiveChatId(chatToUpdateId);
+    }
   };
 
   return (
@@ -84,8 +91,9 @@ export default function Home() {
                       onClick={(e) => {
                         e.preventDefault();
                         setActiveChatId(chat.id)
+                        setActiveView('chat');
                       }}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-foreground ${activeChatId === chat.id ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-foreground ${activeChatId === chat.id && activeView === 'chat' ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                       >
                       {chat.title}
                       </a>
@@ -110,15 +118,22 @@ export default function Home() {
         </div>
       </aside>
       <main className="flex flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-6">
-            <div />
+        <header className="flex h-16 shrink-0 items-center justify-end border-b bg-background px-6">
+            <Button variant="outline" onClick={() => setActiveView('quiz')}>
+              <BookOpenCheck className="h-4 w-4 mr-2" />
+              Start Quiz
+            </Button>
         </header>
         <div className="flex flex-1 flex-col">
-          <AiAssistantChat 
-            key={activeChatId}
-            chat={getActiveChat()}
-            onSendMessage={handleSendMessage}
-           />
+          {activeView === 'chat' ? (
+            <AiAssistantChat 
+              key={activeChatId}
+              chat={getActiveChat()}
+              onSendMessage={handleSendMessage}
+            />
+          ) : (
+            <Quiz />
+          )}
         </div>
       </main>
     </div>
