@@ -39,7 +39,7 @@ export default function Home() {
         const updatedChats = [...prevChats];
         const updatedChat = {
           ...updatedChats[existingChatIndex],
-          messages: [...updatedChats[existingChat-Index].messages, userMessage, assistantMessage],
+          messages: [...updatedChats[existingChatIndex].messages, userMessage, assistantMessage],
         };
         updatedChats[existingChatIndex] = updatedChat;
         return updatedChats;
@@ -114,9 +114,9 @@ export default function Home() {
       </aside>
       <main className="flex flex-col">
         <header className="flex h-16 shrink-0 items-center justify-end border-b bg-background px-6">
-            <Button variant="outline" size="sm" onClick={() => setActiveView('quiz')}>
+            <Button variant="outline" size="icon" onClick={() => setActiveView('quiz')}>
               <BookOpenCheck className="h-4 w-4" />
-              Start Quiz
+              <span className="sr-only">Start Quiz</span>
             </Button>
         </header>
         <div className="flex flex-1 flex-col">
