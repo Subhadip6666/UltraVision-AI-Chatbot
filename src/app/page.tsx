@@ -31,8 +31,10 @@ export default function Home() {
   }
 
   const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
+    const isNewChat = !activeChatId;
+    const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
+  
     setChats(prevChats => {
-      const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
       const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
   
       if (existingChatIndex > -1) {
@@ -49,12 +51,13 @@ export default function Home() {
           title: (userMessage.content as string).substring(0, 30) + '...',
           messages: [userMessage, assistantMessage],
         };
-        if (!activeChatId) {
-          setActiveChatId(newChat.id);
-        }
         return [newChat, ...prevChats];
       }
     });
+
+    if (isNewChat) {
+      setActiveChatId(chatToUpdateId);
+    }
   };
 
   return (
