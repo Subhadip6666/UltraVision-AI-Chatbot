@@ -4,9 +4,10 @@
 import { useState } from 'react';
 import { AiAssistantChat, type Message } from '@/components/ai-assistant-chat';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, ChevronDown, Pencil, BookOpenCheck } from 'lucide-react';
+import { BrainCircuit, ChevronDown, Pencil, BookOpenCheck, GraduationCap } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Quiz } from '@/components/quiz';
+import { LearningPath } from '@/components/learning-path';
 
 export interface Chat {
   id: string;
@@ -18,7 +19,7 @@ export interface Chat {
 export default function Home() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'chat' | 'quiz'>('chat');
+  const [activeView, setActiveView] = useState<'chat' | 'quiz' | 'learn'>('chat');
 
   const handleNewChat = () => {
     setActiveChatId(null);
@@ -30,20 +31,19 @@ export default function Home() {
     return chats.find(chat => chat.id === activeChatId) ?? null;
   }
 
-  const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
+  const handleSendMessage = (userMessage: Message, assistantMessage: Message, rawUserMessage: string) => {
     const isNewChat = !activeChatId;
     const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
+    const chatTitle = rawUserMessage.substring(0, 30) + '...';
   
     if (isNewChat) {
-      setChats(prevChats => {
         const newChat: Chat = {
           id: chatToUpdateId,
-          title: (userMessage.content as string).substring(0, 30) + '...',
+          title: chatTitle,
           messages: [userMessage, assistantMessage],
         };
-        return [newChat, ...prevChats];
-      });
-      setActiveChatId(chatToUpdateId);
+        setChats(prevChats => [newChat, ...prevChats]);
+        setActiveChatId(chatToUpdateId);
     } else {
       setChats(prevChats => {
         const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
@@ -60,6 +60,25 @@ export default function Home() {
       });
     }
   };
+
+  const renderActiveView = () => {
+    switch (activeView) {
+      case 'chat':
+        return (
+          <AiAssistantChat 
+            key={activeChatId}
+            chat={getActiveChat()}
+            onSendMessage={handleSendMessage}
+          />
+        );
+      case 'quiz':
+        return <Quiz onExitQuiz={() => setActiveView('chat')} />;
+      case 'learn':
+        return <LearningPath onExit={() => setActiveView('chat')} />;
+      default:
+        return null;
+    }
+  }
 
   return (
     <div className="grid min-h-screen w-full grid-cols-[280px_1fr]">
@@ -117,22 +136,18 @@ export default function Home() {
         </div>
       </aside>
       <main className="flex flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-end border-b bg-background px-6">
+        <header className="flex h-16 shrink-0 items-center justify-end border-b bg-background px-6 gap-2">
+            <Button variant="outline" size="icon" onClick={() => setActiveView('learn')}>
+              <GraduationCap className="h-4 w-4" />
+              <span className="sr-only">Start Learning</span>
+            </Button>
             <Button variant="outline" size="icon" onClick={() => setActiveView('quiz')}>
               <BookOpenCheck className="h-4 w-4" />
               <span className="sr-only">Start Quiz</span>
             </Button>
         </header>
         <div className="flex flex-1 flex-col">
-          {activeView === 'chat' ? (
-            <AiAssistantChat 
-              key={activeChatId}
-              chat={getActiveChat()}
-              onSendMessage={handleSendMessage}
-            />
-          ) : (
-            <Quiz onExitQuiz={() => setActiveView('chat')} />
-          )}
+          {renderActiveView()}
         </div>
       </main>
     </div>
