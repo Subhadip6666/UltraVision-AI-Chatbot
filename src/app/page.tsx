@@ -28,24 +28,31 @@ export default function Home() {
   }
 
   const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
-     if (!activeChatId) {
+    setChats(prevChats => {
+      const existingChat = prevChats.find(chat => chat.id === activeChatId);
+      
+      if (existingChat) {
+        // Update existing chat
+        return prevChats.map(chat => {
+          if (chat.id === activeChatId) {
+            return {
+              ...chat,
+              messages: [...chat.messages, userMessage, assistantMessage],
+            };
+          }
+          return chat;
+        });
+      } else {
+        // Create new chat
         const newChat: Chat = {
-            id: `chat-${Date.now()}`,
-            title: (userMessage.content as string).substring(0, 30) + '...',
-            messages: [userMessage, assistantMessage],
+          id: `chat-${Date.now()}`,
+          title: (userMessage.content as string).substring(0, 30) + '...',
+          messages: [userMessage, assistantMessage],
         };
-        setChats(prev => [newChat, ...prev]);
         setActiveChatId(newChat.id);
-     } else {
-        setChats(prev => prev.map(chat => {
-            if (chat.id === activeChatId) {
-                const newMessages = [...chat.messages, userMessage, assistantMessage];
-                const newTitle = chat.messages.length === 0 ? (userMessage.content as string).substring(0, 30) + '...' : chat.title;
-                return {...chat, title: newTitle, messages: newMessages};
-            }
-            return chat;
-        }));
-     }
+        return [newChat, ...prevChats];
+      }
+    });
   };
 
   return (
