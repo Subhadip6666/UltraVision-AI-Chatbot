@@ -131,9 +131,14 @@ export function LearningPath({ onExit }: LearningPathProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={handleLanguageSelect} disabled={!selectedLanguage || isLoading}>
-                  Fetch Topics
-                </Button>
+                <div className="flex gap-2">
+                    <Button onClick={handleLanguageSelect} disabled={!selectedLanguage || isLoading} className="w-full">
+                      Fetch Topics
+                    </Button>
+                    <Button variant="outline" onClick={onExit} className="w-full">
+                        Exit
+                    </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
