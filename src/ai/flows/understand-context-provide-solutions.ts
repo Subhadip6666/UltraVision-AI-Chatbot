@@ -28,10 +28,10 @@ export type UnderstandContextProvideSolutionsInput = z.infer<
 const UnderstandContextProvideSolutionsOutputSchema = z.object({
   suggestedSolution: z
     .string()
-    .describe('The suggested code snippet or solution to the problem.'),
+    .describe('The suggested code snippet or solution to the problem. This code MUST be well-formatted with proper indentation and newlines, as it would appear in a code editor. Do not output a single line of code.'),
   explanation: z
     .string()
-    .describe('A brief explanation of the suggested solution and how it addresses the problem.'),
+    .describe('A brief, concise explanation of the suggested solution and how it addresses the problem.'),
 });
 export type UnderstandContextProvideSolutionsOutput = z.infer<
   typeof UnderstandContextProvideSolutionsOutputSchema
@@ -62,8 +62,8 @@ const prompt = ai.definePrompt({
   
   Explain *why* the solution works, but keep it brief and to the point.
   
-  Finally, provide the code snippet. Make sure the code is well-formatted with proper indentation and newlines, just like it would appear in a code editor.
-  
+  Finally, provide the code snippet. It is CRITICAL that the code is well-formatted with proper indentation and newlines, just like it would appear in a code editor. DO NOT provide the code as a single line.
+
   {{#if language}}Ensure the code snippet is written in {{{language}}}.{{/if}}`,
 });
 
