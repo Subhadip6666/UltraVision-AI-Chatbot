@@ -18,6 +18,7 @@ const UnderstandContextProvideSolutionsInputSchema = z.object({
     .describe('A detailed description of the coding problem.'),
   userRequest: z.string().describe('The specific request or question from the user.'),
   codeContext: z.string().optional().describe('The surrounding code or context in which the problem exists.'),
+  language: z.string().optional().describe('The programming language for the code solution.'),
 });
 export type UnderstandContextProvideSolutionsInput = z.infer<
   typeof UnderstandContextProvideSolutionsInputSchema
@@ -52,6 +53,7 @@ const prompt = ai.definePrompt({
   Problem Description: {{{problemDescription}}}
   Code Context: {{{codeContext}}}
   User Request: {{{userRequest}}}
+  {{#if language}}Language: {{{language}}}{{/if}}
 
   Based on the information, provide a helpful code solution and an explanation.
   
@@ -59,7 +61,9 @@ const prompt = ai.definePrompt({
   
   Explain *why* the solution works, and walk through the code. Make it easy to understand.
   
-  Finally, provide the code snippet.`,
+  Finally, provide the code snippet.
+  
+  {{#if language}}Ensure the code snippet is written in {{{language}}}.{{/if}}`,
 });
 
 const understandContextProvideSolutionsFlow = ai.defineFlow(

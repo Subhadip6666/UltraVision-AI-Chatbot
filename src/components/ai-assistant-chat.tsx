@@ -51,6 +51,8 @@ interface AiAssistantChatProps {
 export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [task, setTask] = useState('generate');
+  const [language, setLanguage] = useState('javascript');
 
   useEffect(() => {
     if (chat) {
@@ -90,6 +92,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
       const result = await understandContextProvideSolutions({
         userRequest: data.message,
         problemDescription: data.message,
+        language,
       });
 
       const assistantMessageContent = (
@@ -198,7 +201,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
                   }}
                 />
                 <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center space-x-2">
-                    <Select defaultValue="generate">
+                    <Select value={task} onValueChange={setTask}>
                         <SelectTrigger className="w-auto gap-2 bg-transparent">
                             <SelectValue />
                         </SelectTrigger>
@@ -209,7 +212,7 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
                         </SelectContent>
                     </Select>
 
-                    <Select defaultValue="javascript">
+                    <Select value={language} onValueChange={setLanguage}>
                         <SelectTrigger className="w-auto gap-2 bg-transparent">
                             <SelectValue />
                         </SelectTrigger>
@@ -243,5 +246,3 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
     </div>
   );
 }
-
-    
