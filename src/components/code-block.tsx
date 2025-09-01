@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -5,13 +6,16 @@ import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeBlockProps {
   code: string;
   className?: string;
+  language?: string;
 }
 
-export function CodeBlock({ code, className }: CodeBlockProps) {
+export function CodeBlock({ code, className, language }: CodeBlockProps) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
@@ -28,9 +32,22 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
 
   return (
     <div className={cn("relative group rounded-lg bg-secondary/50 border", className)}>
-      <pre className="p-4 text-sm overflow-x-auto font-code text-foreground">
-        <code>{code}</code>
-      </pre>
+       <SyntaxHighlighter 
+        language={language} 
+        style={vscDarkPlus}
+        customStyle={{ 
+            margin: 0, 
+            padding: '1rem', 
+            backgroundColor: 'transparent',
+            borderRadius: '0.5rem',
+            fontSize: '0.875rem'
+        }}
+        codeTagProps={{
+            className: "font-code"
+        }}
+        >
+        {code}
+      </SyntaxHighlighter>
       <Button
         variant="ghost"
         size="icon"

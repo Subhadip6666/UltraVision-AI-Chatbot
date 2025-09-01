@@ -107,7 +107,11 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
       const assistantMessageContent = (
         <div>
           <p>{result.explanation}</p>
-          <CodeBlock code={result.suggestedSolution} className="mt-2" />
+          <CodeBlock 
+            code={result.suggestedSolution} 
+            className="mt-2" 
+            language={language}
+          />
         </div>
       );
 
