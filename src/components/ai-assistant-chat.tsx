@@ -89,9 +89,18 @@ export function AiAssistantChat({ chat, onSendMessage }: AiAssistantChatProps) {
 
 
     try {
+      let problemDescription = '';
+      if (task === 'generate') {
+        problemDescription = 'Generate a code snippet based on the user\'s request.';
+      } else if (task === 'debug') {
+        problemDescription = 'Debug the following code and provide a fix.';
+      } else if (task === 'explain') {
+        problemDescription = 'Explain the following code.';
+      }
+
       const result = await understandContextProvideSolutions({
         userRequest: data.message,
-        problemDescription: data.message,
+        problemDescription: problemDescription,
         language,
       });
 
