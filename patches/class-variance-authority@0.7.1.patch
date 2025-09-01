@@ -1,0 +1,26 @@
+diff --git a/node_modules/class-variance-authority/dist/index.mjs b/node_modules/class-variance-authority/dist/index.mjs
+index 9e95604..190f70a 100644
+--- a/node_modules/class-variance-authority/dist/index.mjs
++++ b/node_modules/class-variance-authority/dist/index.mjs
+@@ -32,7 +32,7 @@
+       }
+     }
+     const props = Object.keys(defaultVariants).reduce((acc, key) => {
+-      if (options[key] === null)
++      if (options?.[key] === null)
+         return acc;
+       acc[key] = String(options[key]) || defaultVariants[key];
+       return acc;
+diff --git a/node_modules/class-variance-authority/dist/index.cjs b/node_modules/class-variance-authority/dist/index.cjs
+index 28fd878..f78819a 100644
+--- a/node_modules/class-variance-authority/dist/index.cjs
++++ b/node_modules/class-variance-authority/dist/index.cjs
+@@ -34,7 +34,7 @@
+       }
+     }
+     const props = Object.keys(defaultVariants).reduce((acc, key) => {
+-      if (options[key] === null)
++      if (options?.[key] === null)
+         return acc;
+       acc[key] = String(options[key]) || defaultVariants[key];
+       return acc;
