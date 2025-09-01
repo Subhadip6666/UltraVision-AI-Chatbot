@@ -30,7 +30,7 @@ const UnderstandContextProvideSolutionsOutputSchema = z.object({
     .describe('The suggested code snippet or solution to the problem.'),
   explanation: z
     .string()
-    .describe('An explanation of the suggested solution and how it addresses the problem.'),
+    .describe('A brief explanation of the suggested solution and how it addresses the problem.'),
 });
 export type UnderstandContextProvideSolutionsOutput = z.infer<
   typeof UnderstandContextProvideSolutionsOutputSchema
@@ -55,11 +55,11 @@ const prompt = ai.definePrompt({
   User Request: {{{userRequest}}}
   {{#if language}}Language: {{{language}}}{{/if}}
 
-  Based on the information, provide a helpful code solution and an explanation.
+  Based on the information, provide a helpful code solution and a brief, concise explanation.
   
   Start your explanation in a friendly, conversational tone. For example: "Of course! I can certainly help with that." or "That's a great question! Let's break it down."
   
-  Explain *why* the solution works, and walk through the code. Make it easy to understand.
+  Explain *why* the solution works, but keep it brief and to the point.
   
   Finally, provide the code snippet.
   
