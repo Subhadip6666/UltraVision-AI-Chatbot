@@ -61,7 +61,7 @@ const prompt = ai.definePrompt({
   
   Explain *why* the solution works, but keep it brief and to the point.
   
-  Finally, provide the code snippet.
+  Finally, provide the code snippet. Make sure the code is well-formatted with proper indentation and newlines, just like it would appear in a code editor.
   
   {{#if language}}Ensure the code snippet is written in {{{language}}}.{{/if}}`,
 });
