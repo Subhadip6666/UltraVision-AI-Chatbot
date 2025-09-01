@@ -31,35 +31,30 @@ export default function Home() {
   }
 
   const handleSendMessage = (userMessage: Message, assistantMessage: Message) => {
-    const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
-  
     setChats(prevChats => {
+      const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
       const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
-      
+  
       if (existingChatIndex > -1) {
-        // Update existing chat
         const updatedChats = [...prevChats];
         const updatedChat = {
           ...updatedChats[existingChatIndex],
-          messages: [...updatedChats[existingChatIndex].messages, userMessage, assistantMessage],
+          messages: [...updatedChats[existingChat-Index].messages, userMessage, assistantMessage],
         };
         updatedChats[existingChatIndex] = updatedChat;
         return updatedChats;
       } else {
-        // Create new chat
         const newChat: Chat = {
           id: chatToUpdateId,
           title: (userMessage.content as string).substring(0, 30) + '...',
           messages: [userMessage, assistantMessage],
         };
-        setActiveChatId(newChat.id);
+        if (!activeChatId) {
+          setActiveChatId(newChat.id);
+        }
         return [newChat, ...prevChats];
       }
     });
-  
-    if (!activeChatId) {
-      setActiveChatId(chatToUpdateId);
-    }
   };
 
   return (
@@ -119,8 +114,8 @@ export default function Home() {
       </aside>
       <main className="flex flex-col">
         <header className="flex h-16 shrink-0 items-center justify-end border-b bg-background px-6">
-            <Button variant="outline" onClick={() => setActiveView('quiz')}>
-              <BookOpenCheck className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={() => setActiveView('quiz')}>
+              <BookOpenCheck className="h-4 w-4" />
               Start Quiz
             </Button>
         </header>
