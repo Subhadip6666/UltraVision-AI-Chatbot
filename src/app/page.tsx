@@ -127,7 +127,7 @@ export default function Home() {
               onSendMessage={handleSendMessage}
             />
           ) : (
-            <Quiz />
+            <Quiz onExitQuiz={() => setActiveView('chat')} />
           )}
         </div>
       </main>

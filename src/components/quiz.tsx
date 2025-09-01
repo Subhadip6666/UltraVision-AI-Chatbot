@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Loader2, BookOpenCheck } from "lucide-react";
+import { Loader2, BookOpenCheck, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,11 @@ const languages = [
   "JavaScript", "TypeScript", "Python", "Java", "C#", "Go", "Rust", "Ruby", "PHP", "Swift", "Kotlin", "Dart"
 ];
 
-export function Quiz() {
+interface QuizProps {
+    onExitQuiz: () => void;
+}
+
+export function Quiz({ onExitQuiz }: QuizProps) {
   const [language, setLanguage] = useState<string>("");
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,10 +62,15 @@ export function Quiz() {
       setShowAnswer(false);
     } else {
       // End of quiz
-      setQuiz([]);
-      setLanguage("");
+      handleFinishQuiz();
     }
   };
+  
+  const handleFinishQuiz = () => {
+    setQuiz([]);
+    setLanguage("");
+  }
+
 
   const currentQuestion = quiz[currentQuestionIndex];
 
@@ -90,9 +99,14 @@ export function Quiz() {
                     ))}
                     </SelectContent>
                 </Select>
-                <Button onClick={handleStartQuiz} disabled={!language || isLoading}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : "Start Quiz"}
-                </Button>
+                <div className="flex gap-2">
+                    <Button onClick={handleStartQuiz} disabled={!language || isLoading} className="w-full">
+                        {isLoading ? <Loader2 className="animate-spin" /> : "Start Quiz"}
+                    </Button>
+                     <Button variant="outline" onClick={onExitQuiz} className="w-full">
+                        Exit
+                    </Button>
+                </div>
                 </div>
                 {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
             </CardContent>
@@ -103,7 +117,11 @@ export function Quiz() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-8">
-        <Card className="w-full max-w-2xl">
+        <Card className="w-full max-w-2xl relative">
+             <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onExitQuiz}>
+                <X className="h-4 w-4" />
+                <span className="sr-only">Exit Quiz</span>
+            </Button>
             <CardHeader>
                 <CardTitle>Quiz: {language}</CardTitle>
                 <CardDescription>Question {currentQuestionIndex + 1} of {quiz.length}</CardDescription>
@@ -134,7 +152,7 @@ export function Quiz() {
                   </div>
                 )}
                 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end gap-2">
                     {showAnswer ? (
                          <Button onClick={handleNextQuestion}>
                             {currentQuestionIndex < quiz.length - 1 ? "Next Question" : "Finish Quiz"}
