@@ -34,29 +34,30 @@ export default function Home() {
     const isNewChat = !activeChatId;
     const chatToUpdateId = activeChatId ?? `chat-${Date.now()}`;
   
-    setChats(prevChats => {
-      const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
-  
-      if (existingChatIndex > -1) {
-        const updatedChats = [...prevChats];
-        const updatedChat = {
-          ...updatedChats[existingChatIndex],
-          messages: [...updatedChats[existingChatIndex].messages, userMessage, assistantMessage],
-        };
-        updatedChats[existingChatIndex] = updatedChat;
-        return updatedChats;
-      } else {
+    if (isNewChat) {
+      setChats(prevChats => {
         const newChat: Chat = {
           id: chatToUpdateId,
           title: (userMessage.content as string).substring(0, 30) + '...',
           messages: [userMessage, assistantMessage],
         };
         return [newChat, ...prevChats];
-      }
-    });
-
-    if (isNewChat) {
+      });
       setActiveChatId(chatToUpdateId);
+    } else {
+      setChats(prevChats => {
+        const existingChatIndex = prevChats.findIndex(chat => chat.id === chatToUpdateId);
+        if (existingChatIndex > -1) {
+          const updatedChats = [...prevChats];
+          const updatedChat = {
+            ...updatedChats[existingChatIndex],
+            messages: [...updatedChats[existingChatIndex].messages, userMessage, assistantMessage],
+          };
+          updatedChats[existingChatIndex] = updatedChat;
+          return updatedChats;
+        }
+        return prevChats; // Should not happen if it's not a new chat
+      });
     }
   };
 
